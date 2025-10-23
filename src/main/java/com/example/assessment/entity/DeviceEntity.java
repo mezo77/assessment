@@ -1,5 +1,6 @@
-package com.example.assessment.model;
+package com.example.assessment.entity;
 
+import com.example.assessment.model.DeviceState;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -21,5 +22,8 @@ public class DeviceEntity {
     private DeviceState state;
 
     private LocalDateTime creationTime;
+
+    @Version
+    private Long version;
 
 }

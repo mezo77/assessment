@@ -3,12 +3,15 @@ package com.example.assessment.service;
 import com.example.assessment.exception.DeviceInUseException;
 import com.example.assessment.exception.DeviceNotFoundException;
 import com.example.assessment.model.DeviceDTO;
-import com.example.assessment.model.DeviceEntity;
+import com.example.assessment.entity.DeviceEntity;
 import com.example.assessment.model.DeviceState;
 import com.example.assessment.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,6 +40,13 @@ public class DeviceService {
         return deviceRepository.findAll().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    public Page<DeviceDTO> getAllDevices(Pageable pageable) {
+        logger.debug("Fetching paged devices: {}", pageable);
+        Page<DeviceEntity> page = deviceRepository.findAll(pageable);
+        List<DeviceDTO> dtos = page.stream().map(this::mapToDto).collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageable, page.getTotalElements());
     }
 
     public DeviceDTO getDeviceById(Long id) {

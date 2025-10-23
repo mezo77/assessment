@@ -3,7 +3,7 @@ package com.example.assessment.service;
 import com.example.assessment.exception.DeviceInUseException;
 import com.example.assessment.exception.DeviceNotFoundException;
 import com.example.assessment.model.DeviceDTO;
-import com.example.assessment.model.DeviceEntity;
+import com.example.assessment.entity.DeviceEntity;
 import com.example.assessment.model.DeviceState;
 import com.example.assessment.repository.DeviceRepository;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

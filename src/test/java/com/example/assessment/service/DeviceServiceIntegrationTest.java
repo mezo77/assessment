@@ -1,8 +1,9 @@
 package com.example.assessment.service;
 
+import com.example.assessment.config.TestcontainersConfiguration;
 import com.example.assessment.exception.DeviceNotFoundException;
 import com.example.assessment.model.DeviceDTO;
-import com.example.assessment.model.DeviceEntity;
+import com.example.assessment.entity.DeviceEntity;
 import com.example.assessment.model.DeviceState;
 import com.example.assessment.repository.DeviceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Import(com.example.assessment.TestcontainersConfiguration.class)
+@Import(TestcontainersConfiguration.class)
 @TestPropertySource(properties = {
     "spring.jpa.hibernate.ddl-auto=create-drop"
 })

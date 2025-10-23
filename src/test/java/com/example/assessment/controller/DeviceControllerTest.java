@@ -2,8 +2,7 @@ package com.example.assessment.controller;
 
 import com.example.assessment.exception.DeviceInUseException;
 import com.example.assessment.exception.DeviceNotFoundException;
-import com.example.assessment.model.DeviceDTO;
-import com.example.assessment.model.DeviceState;
+import com.example.assessment.model.*;
 import com.example.assessment.service.DeviceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -38,10 +39,10 @@ class DeviceControllerTest {
 
     @Test
     void createDevice_shouldReturnCreatedDevice() throws Exception {
-        DeviceDTO deviceDTO = new DeviceDTO();
-        deviceDTO.setName("Test Device");
-        deviceDTO.setBrand("Test Brand");
-        deviceDTO.setState(DeviceState.AVAILABLE);
+        CreateDeviceRequest request = new CreateDeviceRequest();
+        request.setName("Test Device");
+        request.setBrand("Test Brand");
+        request.setState(DeviceState.AVAILABLE);
 
         DeviceDTO savedDevice = new DeviceDTO();
         savedDevice.setId(1L);
@@ -52,9 +53,9 @@ class DeviceControllerTest {
 
         when(deviceService.createDevice(any(DeviceDTO.class))).thenReturn(savedDevice);
 
-        mockMvc.perform(post("/devices")
+        mockMvc.perform(post("/api/v1/devices")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deviceDTO)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("Test Device"));
@@ -69,7 +70,7 @@ class DeviceControllerTest {
 
         when(deviceService.getDeviceById(1L)).thenReturn(deviceDTO);
 
-        mockMvc.perform(get("/devices/1"))
+        mockMvc.perform(get("/api/v1/devices/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("Test Device"));
@@ -79,36 +80,36 @@ class DeviceControllerTest {
     void getDevice_shouldReturn404WhenNotFound() throws Exception {
         when(deviceService.getDeviceById(1L)).thenThrow(new DeviceNotFoundException("Device not found"));
 
-        mockMvc.perform(get("/devices/1"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/v1/devices/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404));
     }
 
     @Test
-    void getAllDevices_shouldReturnList() throws Exception {
-        DeviceDTO device1 = new DeviceDTO();
-        device1.setId(1L);
-        device1.setName("Device 1");
+    void getAllDevices_shouldReturnPagedList() throws Exception {
+        DeviceDTO d1 = new DeviceDTO();
+        d1.setId(1L);
+        d1.setName("Device 1");
 
-        DeviceDTO device2 = new DeviceDTO();
-        device2.setId(2L);
-        device2.setName("Device 2");
+        DeviceDTO d2 = new DeviceDTO();
+        d2.setId(2L);
+        d2.setName("Device 2");
 
-        List<DeviceDTO> devices = Arrays.asList(device1, device2);
+        List<DeviceDTO> devices = Arrays.asList(d1, d2);
+        when(deviceService.getAllDevices(any())).thenReturn(new PageImpl<>(devices, PageRequest.of(0, 20), devices.size()));
 
-        when(deviceService.getAllDevices()).thenReturn(devices);
-
-        mockMvc.perform(get("/devices"))
+        mockMvc.perform(get("/api/v1/devices"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Device 1"));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].name").value("Device 1"));
     }
 
     @Test
     void updateDevice_shouldReturnUpdatedDevice() throws Exception {
-        DeviceDTO updateDTO = new DeviceDTO();
-        updateDTO.setName("Updated Device");
-        updateDTO.setBrand("Updated Brand");
-        updateDTO.setState(DeviceState.IN_USE);
+        UpdateDeviceRequest updateReq = new UpdateDeviceRequest();
+        updateReq.setName("Updated Device");
+        updateReq.setBrand("Updated Brand");
+        updateReq.setState(DeviceState.IN_USE);
 
         DeviceDTO updatedDevice = new DeviceDTO();
         updatedDevice.setId(1L);
@@ -118,29 +119,30 @@ class DeviceControllerTest {
 
         when(deviceService.updateDevice(eq(1L), any(DeviceDTO.class))).thenReturn(updatedDevice);
 
-        mockMvc.perform(put("/devices/1")
+        mockMvc.perform(put("/api/v1/devices/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDTO)))
+                        .content(objectMapper.writeValueAsString(updateReq)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Updated Device"));
     }
 
     @Test
     void updateDevice_shouldReturn400WhenInUse() throws Exception {
-        DeviceDTO updateDTO = new DeviceDTO();
-        updateDTO.setName("Updated Device");
+        UpdateDeviceRequest updateReq = new UpdateDeviceRequest();
+        updateReq.setName("Updated Device");
 
         when(deviceService.updateDevice(eq(1L), any(DeviceDTO.class))).thenThrow(new DeviceInUseException("Cannot update name when device is in use"));
 
-        mockMvc.perform(put("/devices/1")
+        mockMvc.perform(put("/api/v1/devices/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDTO)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(updateReq)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
     void deleteDevice_shouldReturnNoContent() throws Exception {
-        mockMvc.perform(delete("/devices/1"))
+        mockMvc.perform(delete("/api/v1/devices/1"))
                 .andExpect(status().isNoContent());
     }
 }

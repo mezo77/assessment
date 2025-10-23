@@ -1,5 +1,7 @@
 package com.example.assessment.controller;
 
+import com.example.assessment.config.TestcontainersConfiguration;
+import com.example.assessment.entity.DeviceEntity;
 import com.example.assessment.model.DeviceDTO;
 import com.example.assessment.model.DeviceState;
 import com.example.assessment.repository.DeviceRepository;
@@ -19,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import(com.example.assessment.TestcontainersConfiguration.class)
+@Import(TestcontainersConfiguration.class)
 @TestPropertySource(properties = {
     "spring.jpa.hibernate.ddl-auto=create-drop"
 })
@@ -46,7 +48,7 @@ class DeviceControllerIntegrationTest {
         deviceDTO.setBrand("Brand");
         deviceDTO.setState(DeviceState.AVAILABLE);
 
-        mockMvc.perform(post("/devices")
+        mockMvc.perform(post("/api/v1/devices")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(deviceDTO)))
                 .andExpect(status().isOk())
@@ -65,14 +67,14 @@ class DeviceControllerIntegrationTest {
         deviceDTO.setState(DeviceState.AVAILABLE);
 
         // Create device via service or directly
-        var entity = new com.example.assessment.model.DeviceEntity();
+        var entity = new DeviceEntity();
         entity.setName("Test Device");
         entity.setBrand("Brand");
         entity.setState(DeviceState.AVAILABLE);
         entity.setCreationTime(java.time.LocalDateTime.now());
         entity = deviceRepository.save(entity);
 
-        mockMvc.perform(get("/devices/" + entity.getId()))
+        mockMvc.perform(get("/api/v1/devices/" + entity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(entity.getId()))
                 .andExpect(jsonPath("$.name").value("Test Device"));
@@ -80,36 +82,36 @@ class DeviceControllerIntegrationTest {
 
     @Test
     void getDevice_shouldReturn404WhenNotFound() throws Exception {
-        mockMvc.perform(get("/devices/999"))
+        mockMvc.perform(get("/api/v1/devices/999"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void getAllDevices_shouldReturnList() throws Exception {
-        var entity1 = new com.example.assessment.model.DeviceEntity();
+        var entity1 = new DeviceEntity();
         entity1.setName("Device 1");
         entity1.setBrand("Brand");
         entity1.setState(DeviceState.AVAILABLE);
         entity1.setCreationTime(java.time.LocalDateTime.now());
         deviceRepository.save(entity1);
 
-        var entity2 = new com.example.assessment.model.DeviceEntity();
+        var entity2 = new DeviceEntity();
         entity2.setName("Device 2");
         entity2.setBrand("Brand");
         entity2.setState(DeviceState.AVAILABLE);
         entity2.setCreationTime(java.time.LocalDateTime.now());
         deviceRepository.save(entity2);
 
-        mockMvc.perform(get("/devices"))
+        mockMvc.perform(get("/api/v1/devices"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Device 1"))
-                .andExpect(jsonPath("$[1].name").value("Device 2"));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].name").value("Device 1"))
+                .andExpect(jsonPath("$.content[1].name").value("Device 2"));
     }
 
     @Test
     void updateDevice_shouldReturnUpdatedDevice() throws Exception {
-        var entity = new com.example.assessment.model.DeviceEntity();
+        var entity = new DeviceEntity();
         entity.setName("Old Device");
         entity.setBrand("Old Brand");
         entity.setState(DeviceState.AVAILABLE);
@@ -121,7 +123,7 @@ class DeviceControllerIntegrationTest {
         updateDTO.setBrand("Updated Brand");
         updateDTO.setState(DeviceState.IN_USE);
 
-        mockMvc.perform(put("/devices/" + entity.getId())
+        mockMvc.perform(put("/api/v1/devices/" + entity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
@@ -132,14 +134,14 @@ class DeviceControllerIntegrationTest {
 
     @Test
     void deleteDevice_shouldReturnNoContent() throws Exception {
-        var entity = new com.example.assessment.model.DeviceEntity();
+        var entity = new DeviceEntity();
         entity.setName("Device to Delete");
         entity.setBrand("Brand");
         entity.setState(DeviceState.AVAILABLE);
         entity.setCreationTime(java.time.LocalDateTime.now());
         entity = deviceRepository.save(entity);
 
-        mockMvc.perform(delete("/devices/" + entity.getId()))
+        mockMvc.perform(delete("/api/v1/devices/" + entity.getId()))
                 .andExpect(status().isNoContent());
 
         // Verify deleted
@@ -148,21 +150,21 @@ class DeviceControllerIntegrationTest {
 
     @Test
     void getDevicesByBrand_shouldReturnFilteredList() throws Exception {
-        var entity1 = new com.example.assessment.model.DeviceEntity();
+        var entity1 = new DeviceEntity();
         entity1.setName("Device 1");
         entity1.setBrand("Brand A");
         entity1.setState(DeviceState.AVAILABLE);
         entity1.setCreationTime(java.time.LocalDateTime.now());
         deviceRepository.save(entity1);
 
-        var entity2 = new com.example.assessment.model.DeviceEntity();
+        var entity2 = new DeviceEntity();
         entity2.setName("Device 2");
         entity2.setBrand("Brand B");
         entity2.setState(DeviceState.AVAILABLE);
         entity2.setCreationTime(java.time.LocalDateTime.now());
         deviceRepository.save(entity2);
 
-        mockMvc.perform(get("/devices/brand/Brand A"))
+        mockMvc.perform(get("/api/v1/devices/brand/Brand A"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].brand").value("Brand A"));

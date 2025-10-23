@@ -1,6 +1,6 @@
 package com.example.assessment.repository;
 
-import com.example.assessment.model.DeviceEntity;
+import com.example.assessment.entity.DeviceEntity;
 import com.example.assessment.model.DeviceState;
 import org.springframework.data.jpa.repository.JpaRepository;
 
