@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "Assessment Device API",
+    "description": "Postman collection for the Assessment Device REST API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Device",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Sample Device\",\n  \"brand\": \"Sample Brand\",\n  \"state\": \"AVAILABLE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/devices",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "devices"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Devices",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/devices",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "devices"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Device by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/devices/{{deviceId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "devices",
+            "{{deviceId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Device",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Device\",\n  \"brand\": \"Updated Brand\",\n  \"state\": \"IN_USE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/devices/{{deviceId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "devices",
+            "{{deviceId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Partial Update Device",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Partially Updated Device\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/devices/{{deviceId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "devices",
+            "{{deviceId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Device",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/devices/{{deviceId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "devices",
+            "{{deviceId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Devices by Brand",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/devices/brand/{{brand}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "devices",
+            "brand",
+            "{{brand}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Devices by State",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/devices/state/{{state}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "devices",
+            "state",
+            "{{state}}"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "deviceId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "brand",
+      "value": "Sample Brand",
+      "type": "string"
+    },
+    {
+      "key": "state",
+      "value": "AVAILABLE",
+      "type": "string"
+    }
+  ]
+}
+
