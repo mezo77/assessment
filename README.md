@@ -1,4 +1,4 @@
-# Assessment Project
+# Device Management API
 
 A Spring Boot application providing a REST API for managing device resources.
 
