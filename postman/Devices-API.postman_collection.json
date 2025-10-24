@@ -1,0 +1,191 @@
+{
+  "info": {
+    "name": "Devices API",
+    "_postman_id": "b1f6c6b4-0000-4000-8000-000000000001",
+    "description": "Collection for Devices API (create/get/update/patch/delete/filter)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Create Device",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"iPhone 16\",\n  \"brand\": \"Apple\",\n  \"state\": \"AVAILABLE\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/devices",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "devices"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Devices (paged)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/devices?page=0&size=20&sort=name,asc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "devices"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "20"
+            },
+            {
+              "key": "sort",
+              "value": "name,asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Device by Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/devices/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "devices",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Device (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"iPhone 16 Pro\",\n  \"brand\": \"Apple\",\n  \"state\": \"IN_USE\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/devices/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","v1","devices","{{id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Partial Update Device (PATCH)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"iPhone 16 Mini\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/devices/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","v1","devices","{{id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Device",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/devices/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","v1","devices","{{id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Devices by Brand",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/devices/brand/Apple",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","v1","devices","brand","Apple"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Devices by State",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/devices/state/AVAILABLE",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","v1","devices","state","AVAILABLE"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
+
