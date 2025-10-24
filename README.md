@@ -1,16 +1,16 @@
 # Assessment Project
 
-A Spring Boot application providing a REST API for managing deviceDTO resources.
+A Spring Boot application providing a REST API for managing device resources.
 
 ## Overview
 
-This project implements a RESTful API for creating, reading, updating, and deleting deviceDTO resources. It uses Spring Boot 3, Java 21, Maven, PostgreSQL for persistence, and includes Swagger for API documentation.
+This project implements a RESTful API for creating, reading, updating, and deleting device resources. It uses Spring Boot 3, Java 21, Maven, PostgreSQL for persistence, and includes Swagger for API documentation.
 
 ## Features
 
-- **CRUD Operations**: Create, read, update (full and partial), and delete deviceDTOS.
-- **Filtering**: Fetch deviceDTOS by brand or state.
-- **Validation**: Business rules enforced (e.g., cannot update name/brand of in-use deviceDTOS, cannot delete in-use deviceDTOS).
+- **CRUD Operations**: Create, read, update (full and partial), and delete devices.
+- **Filtering**: Fetch devices by brand or state.
+- **Validation**: Business rules enforced (e.g., cannot update name/brand of in-use devices, cannot delete in-use devices).
 - **API Documentation**: Swagger UI available at `/swagger-ui.html`.
 - **Containerization**: Docker support for easy deployment.
 - **Testing**: Unit tests and integration tests with Testcontainers.
@@ -19,23 +19,63 @@ This project implements a RESTful API for creating, reading, updating, and delet
 
 Device:
 - `id` (Long): Unique identifier.
-- `name` (String): Device name (required, cannot be updated if deviceDTO is in-use).
-- `brand` (String): Device brand (required, cannot be updated if deviceDTO is in-use).
+- `name` (String): Device name (required, cannot be updated if device is in-use).
+- `brand` (String): Device brand (required, cannot be updated if device is in-use).
 - `state` (Enum): AVAILABLE, IN_USE, INACTIVE.
 - `creationTime` (LocalDateTime): Auto-set on creation, cannot be updated.
 
 ## API Endpoints
 
-### Base URL: `/deviceDTOS`
+### Base URL: `/api/v1/devices`
 
-- `POST /deviceDTOS` - Create a new deviceDTO.
-- `GET /deviceDTOS` - Get all deviceDTOS.
-- `GET /deviceDTOS/{id}` - Get deviceDTO by ID.
-- `PUT /deviceDTOS/{id}` - Fully update a deviceDTO.
-- `PATCH /deviceDTOS/{id}` - Partially update a deviceDTO.
-- `DELETE /deviceDTOS/{id}` - Delete a deviceDTO.
-- `GET /deviceDTOS/brand/{brand}` - Get deviceDTOS by brand.
-- `GET /deviceDTOS/state/{state}` - Get deviceDTOS by state (AVAILABLE, IN_USE, INACTIVE).
+- `POST /api/v1/devices` - Create a new device.
+- `GET /api/v1/devices` - Get all devices (paginated).
+- `GET /api/v1/devices/{id}` - Get device by ID.
+- `PUT /api/v1/devices/{id}` - Fully update a device.
+- `PATCH /api/v1/devices/{id}` - Partially update a device.
+- `DELETE /api/v1/devices/{id}` - Delete a device.
+- `GET /api/v1/devices/brand/{brand}` - Get devices by brand.
+- `GET /api/v1/devices/state/{state}` - Get devices by state (AVAILABLE, IN_USE, INACTIVE).
+
+### Response Structure
+
+Example response for `GET /api/v1/devices`:
+```json
+{
+    "content": [
+        {
+            "id": 1,
+            "name": "Device 1",
+            "brand": "Brand A",
+            "state": "AVAILABLE",
+            "creationTime": "2025-10-24T10:00:00"
+        },
+        {
+            "id": 2,
+            "name": "Device 2",
+            "brand": "Brand B",
+            "state": "IN_USE",
+            "creationTime": "2025-10-24T11:00:00"
+        }
+    ],
+    "pageable": {
+        "pageNumber": 0,
+        "pageSize": 20,
+        "sort": {
+            "sorted": true,
+            "unsorted": false,
+            "empty": false
+        }
+    },
+    "totalPages": 1,
+    "totalElements": 2,
+    "last": true,
+    "first": true,
+    "numberOfElements": 2,
+    "size": 20,
+    "number": 0
+}
+```
 
 ## Prerequisites
 
@@ -96,18 +136,17 @@ Access Swagger UI at `http://localhost:8080/swagger-ui.html` after starting the 
 ## Validation Rules
 
 - Creation time is set automatically and cannot be modified.
-- Name and brand cannot be updated if the deviceDTO state is IN_USE.
+- Name and brand cannot be updated if the device state is IN_USE.
 - Devices with state IN_USE cannot be deleted.
 
 ## Future Improvements
 
 - Add authentication and authorization.
-- Implement pagination for list endpoints.
 - Add more advanced filtering and sorting.
 - Use DTOs for different operations (e.g., separate CreateDeviceRequest).
 - Add caching for better performance.
-- Implement event-driven architecture for deviceDTO state changes.
-- Add monitoring and logging.
+- Implement event-driven architecture for device state changes.
+- Add monitoring.
 
 ## Project Structure
 
